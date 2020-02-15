@@ -1,7 +1,23 @@
-import pandas
-
+import pandas as pd
+import json
+import os.path as path
 
 def read_excel(filename, sort_by):
-    info_dict = pandas.read_excel(filename)
-    info_list = info_dict.to_dict(sort_by)
-    return info_list
+    if path.isfile(filename):
+        excel_in = pd.read_excel(filename)
+        data_dict = excel_in.to_dict(sort_by)
+        return data_dict
+    return -1
+
+def read_json(filename):
+    if path.isfile(filename):
+        with open(filename, 'r') as json_file:
+            data = json.load(json_file)
+        return data
+    return -1
+
+def overwrite_json(filename, data_dict):
+    with open(filename, 'w') as outfile:
+        json.dump(data_dict, outfile)
+        return 0
+    return -1

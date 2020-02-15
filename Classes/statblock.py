@@ -1,57 +1,94 @@
-import math
+import math, json
+from Classes.misc import read_json
 
 class PrimaryStats:
-    def __init__(self, stng, dex, con, inte, wis, cha):
-        self.stng = stng
-        self.dex = dex
-        self.con = con
-        self.inte = inte
-        self.wis = wis
-        self.cha = cha
-        self.str_mod = math.floor((self.stng - 10) / 2)
-        self.dex_mod = math.floor((self.dex - 10) / 2)
-        self.con_mod = math.floor((self.con - 10) / 2)
-        self.int_mod = math.floor((self.inte - 10) / 2)
-        self.wis_mod = math.floor((self.wis - 10) / 2)
-        self.cha_mod = math.floor((self.cha - 10) / 2)
+    def __init__(self):
+        self.ability_scores = {
+            "str": {"value": 0, "proficiency": False}, 
+            "dex": {"value": 0, "proficiency": False}, 
+            "con": {"value": 0, "proficiency": False}, 
+            "int": {"value": 0, "proficiency": False}, 
+            "wis": {"value": 0, "proficiency": False}, 
+            "cha": {"value": 0, "proficiency": False}
+            }
+
+        self.ability_modifiers = {
+            "str_mod": math.floor((self.ability_scores["str"]["value"] - 10) / 2),
+            "dex_mod": math.floor((self.ability_scores["dex"]["value"] - 10) / 2),
+            "con_mod": math.floor((self.ability_scores["con"]["value"] - 10) / 2),
+            "int_mod": math.floor((self.ability_scores["int"]["value"] - 10) / 2),
+            "wis_mod": math.floor((self.ability_scores["wis"]["value"] - 10) / 2),
+            "cha_mod": math.floor((self.ability_scores["cha"]["value"] - 10) / 2)
+            }
+
+    def get_ability_scores(self):
+        return self.ability_scores
+
+    def get_ability_modifiers(self):
+        return self.ability_modifiers
+
+    def add_ability_score(self, ability, amount):
+        if ability in self.ability_scores.keys():
+            self.ability_scores[ability] += amount
+            return 0
+        return -1
 
 class PhysicalStats:
-    def __init__(self, hitpoints, armor_class, speed):
+    def __init__(self):
+        self.hitpoints = 0
+        self.temp_hp = 0
+        self.armor_class = 10
+        self.speed = 0
+    
+    def set_hitpoints(self, hitpoints):
         self.hitpoints = hitpoints
+
+    def set_temp_hp(self, temp_hp):
+        self.temp_hp = temp_hp
+
+    def set_armor_class(self, armor_class):
         self.armor_class = armor_class
+
+    def set_speed(self, speed):
         self.speed = speed
 
 class Skills:
-    def __init__(self, athl, acro, slei, stea, arca, hist, inve, natu, reli, anim, insi, medi, perc, surv, dece, inti, perf, pers):
-        self.athl = athl
-        self.acro = acro
-        self.slei = slei
-        self.stea = stea
-        self.arca = arca
-        self.hist = hist
-        self.inve = inve
-        self.natu = natu
-        self.reli = reli
-        self.anim = anim
-        self.insi = insi
-        self.medi = medi
-        self.perc = perc
-        self.surv = surv
-        self.dece = dece
-        self.inti = inti
-        self.perf = perf
-        self.pers = pers
+    def __init__(self):
+        self.skills = read_json('Config/skills.json')
+        if self.skills == -1:
+            print("read error")
+            self.skills = None
+
+    def get_skills(self):
+        return self.skills
+
+    def update_values(self, ability_modifiers, prof_bonus):
+        for skill in self.skills:
+            for key in ability_modifiers.keys():
+                if skill["mod"] == key:
+                    skill["value"] = ability_modifiers[key]
+                    if skill["prof"] != 0:
+                        skill["value"] += math.floor(skill["prof"] * prof_bonus)
 
 class MiscStats:
-    def __init__(self, skills, sav_throws, dmg_resists, dmg_immunes, cond_immunes, senses, languages, CR):
+    def __init__(self):
+        self.skills = None
+        self.sav_throws = None
+        self.dmg_resists = None
+        self.dmg_immunes = None
+        self.cond_immunes = None
+        self.senses = None
+        self.languages = None
+        self.CR = None
+
+    def set_skills(self, skills):
         self.skills = skills
+
+    def set_sav_throws(self, sav_throws):
         self.sav_throws = sav_throws
+
+    def set_dmg_resists(self, dmg_resists):
         self.dmg_resists = dmg_resists
-        self.dmg_immunes = dmg_immunes
-        self.cond_immunes = cond_immunes
-        self.senses = senses
-        self.languages = languages
-        self.CR = CR
 
 class Statblock:
     def __init__(self, level, prime_stats, phys_stats, prof_bonus, misc_stats): #, sav_throws, dmg_resists, dmg_immunes, cond_immunes, senses, languages, CR, spells):
@@ -70,53 +107,8 @@ class Statblock:
     def get_physical_stats(self):
         return self.phys_stats
 
-    def get_stng(self):
-        return self.prime_stats.stng
-
-    def get_str_mod(self):
-        return self.prime_stats.str_mod
-
-    def get_dex(self):
-        return self.prime_stats.dex
-    
-    def get_dex_mod(self):
-        return self.prime_stats.dex_mod
-
-    def get_con(self):
-        return self.prime_stats.con
-
-    def get_con_mod(self):
-        return self.prime_stats.con_mod
-
-    def get_inte(self):
-        return self.prime_stats.inte
-
-    def get_inte_mod(self):
-        return self.prime_stats.int_mod
-
-    def get_wis(self):
-        return self.prime_stats.wis
-
-    def get_wis_mod(self):
-        return self.prime_stats.wis_mod
-
-    def get_cha(self):
-        return self.prime_stats.cha
-
-    def get_cha_mod(self):
-        return self.prime_stats.cha_mod
-
-    def get_hitpoints(self):
-        return self.phys_stats.hitpoints
-
-    def get_armor_class(self):
-        return self.phys_stats.armor_class
-
-    def get_speed(self):
-        return self.phys_stats.speed
-
     def get_proficiency(self):
         return self.prof_bonus
 
-    def get_skills(self):
-        return self.misc_stats.skills
+    def get_misc_stats(self):
+        return self.misc_stats
