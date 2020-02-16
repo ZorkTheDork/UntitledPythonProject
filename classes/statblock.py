@@ -1,5 +1,6 @@
-import math, json
-from Classes.misc import read_json
+import math 
+import json
+from classes.misc import read_json
 
 class PrimaryStats:
     def __init__(self):
@@ -9,29 +10,43 @@ class PrimaryStats:
             "con": {"value": 0, "proficiency": False}, 
             "int": {"value": 0, "proficiency": False}, 
             "wis": {"value": 0, "proficiency": False}, 
-            "cha": {"value": 0, "proficiency": False}
-            }
+            "cha": {"value": 0, "proficiency": False}}
 
         self.ability_modifiers = {
-            "str_mod": math.floor((self.ability_scores["str"]["value"] - 10) / 2),
-            "dex_mod": math.floor((self.ability_scores["dex"]["value"] - 10) / 2),
-            "con_mod": math.floor((self.ability_scores["con"]["value"] - 10) / 2),
-            "int_mod": math.floor((self.ability_scores["int"]["value"] - 10) / 2),
-            "wis_mod": math.floor((self.ability_scores["wis"]["value"] - 10) / 2),
-            "cha_mod": math.floor((self.ability_scores["cha"]["value"] - 10) / 2)
-            }
+            "str": math.floor((self.ability_scores["str"]["value"] - 10) / 2),
+            "dex": math.floor((self.ability_scores["dex"]["value"] - 10) / 2),
+            "con": math.floor((self.ability_scores["con"]["value"] - 10) / 2),
+            "int": math.floor((self.ability_scores["int"]["value"] - 10) / 2),
+            "wis": math.floor((self.ability_scores["wis"]["value"] - 10) / 2),
+            "cha": math.floor((self.ability_scores["cha"]["value"] - 10) / 2)}
 
     def get_ability_scores(self):
         return self.ability_scores
 
+    def get_keys(self):
+        return self.ability_scores.keys()
+
     def get_ability_modifiers(self):
         return self.ability_modifiers
+    
+    def get_ability_score_value(self, ability):
+        return self.ability_scores[ability]
 
-    def add_ability_score(self, ability, amount):
-        if ability in self.ability_scores.keys():
-            self.ability_scores[ability] += amount
-            return 0
-        return -1
+    def get_ability_mod_value(self, ability):
+        return self.ability_modifiers[ability]
+
+    def set_ability_score_value(self, ability, val):
+        self.ability_scores[ability] = val
+
+    def set_ability_mod_value(self, ability, val):
+        self.ability_modifiers[ability] = val
+
+    def update_modifiers(self):
+        for key in self.get_keys():
+            val = math.floor((int(self.get_ability_score_value(key)) - 10) / 2)
+            self.set_ability_mod_value(key, val) 
+
+                   
 
 class PhysicalStats:
     def __init__(self):
@@ -54,7 +69,7 @@ class PhysicalStats:
 
 class Skills:
     def __init__(self):
-        self.skills = read_json('Config/skills.json')
+        self.skills = read_json('config/skills.json')
         if self.skills == -1:
             print("read error")
             self.skills = None
