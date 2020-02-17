@@ -30,16 +30,22 @@ class PrimaryStats:
         return self.ability_modifiers
     
     def get_ability_score_value(self, ability):
-        return self.ability_scores[ability]
+        return self.ability_scores[ability]["value"]
 
     def get_ability_mod_value(self, ability):
         return self.ability_modifiers[ability]
 
+    def get_ability_proficiency(self, ability):
+        return self.ability_scores[ability]["proficiency"]
+
     def set_ability_score_value(self, ability, val):
-        self.ability_scores[ability] = val
+        self.ability_scores[ability]["value"] = val
 
     def set_ability_mod_value(self, ability, val):
         self.ability_modifiers[ability] = val
+
+    def set_ability_proficiency(self, ability, val):
+        self.ability_scores[ability]["proficiency"] = val
 
     def update_modifiers(self):
         for key in self.get_keys():

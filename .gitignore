@@ -1,0 +1,8 @@
+classes/__pycache__/__init__.cpython-37.pyc
+classes/__pycache__/misc.cpython-37.pyc
+classes/__pycache__/statblock.cpython-37.pyc
+classes/test/__pycache__/__init__.cpython-37.pyc
+classes/test/__pycache__/test_statblock.cpython-37-pytest-5.3.5.pyc
+.vscode/.ropeproject/config.py
+.vscode/.ropeproject/objectdb
+classes/test/__pycache__/conftest.cpython-37-pytest-5.3.5.pyc
