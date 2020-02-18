@@ -6,3 +6,6 @@ classes/test/__pycache__/test_statblock.cpython-37-pytest-5.3.5.pyc
 .vscode/.ropeproject/config.py
 .vscode/.ropeproject/objectdb
 classes/test/__pycache__/conftest.cpython-37-pytest-5.3.5.pyc
+classes/test/__pycache__/test_primary_stats.cpython-37-pytest-5.3.5.pyc
+classes/test/__pycache__/test_physical_stats.cpython-37-pytest-5.3.5.pyc
+classes/test/__pycache__/test_skills.cpython-37-pytest-5.3.5.pyc

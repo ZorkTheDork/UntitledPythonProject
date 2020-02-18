@@ -10,14 +10,10 @@ def read_excel(filename, sort_by):
     return -1
 
 def read_json(filename):
-    if path.isfile(filename):
-        with open(filename, 'r') as json_file:
-            data = json.load(json_file)
-        return data
-    return -1
+    with open(filename, 'r') as json_file:
+        data = json.load(json_file)
+    return data
 
 def overwrite_json(filename, data_dict):
     with open(filename, 'w') as outfile:
         json.dump(data_dict, outfile)
-        return 0
-    return -1

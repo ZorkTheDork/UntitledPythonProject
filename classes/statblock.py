@@ -20,6 +20,9 @@ class PrimaryStats:
             "wis": math.floor((self.ability_scores["wis"]["value"] - 10) / 2),
             "cha": math.floor((self.ability_scores["cha"]["value"] - 10) / 2)}
 
+    def __set_ability_mod_value(self, ability, val):
+        self.ability_modifiers[ability] = val
+
     def get_ability_scores(self):
         return self.ability_scores
 
@@ -41,16 +44,13 @@ class PrimaryStats:
     def set_ability_score_value(self, ability, val):
         self.ability_scores[ability]["value"] = val
 
-    def set_ability_mod_value(self, ability, val):
-        self.ability_modifiers[ability] = val
-
     def set_ability_proficiency(self, ability, val):
         self.ability_scores[ability]["proficiency"] = val
 
     def update_modifiers(self):
         for key in self.get_keys():
             val = math.floor((int(self.get_ability_score_value(key)) - 10) / 2)
-            self.set_ability_mod_value(key, val) 
+            self.__set_ability_mod_value(key, val) 
 
                    
 
@@ -61,6 +61,18 @@ class PhysicalStats:
         self.armor_class = 10
         self.speed = 0
     
+    def get_hitpoints(self):
+        return self.hitpoints
+
+    def get_temp_hp(self):
+        return self.temp_hp
+
+    def get_armor_class(self):
+        return self.armor_class
+
+    def get_speed(self):
+        return self.speed
+
     def set_hitpoints(self, hitpoints):
         self.hitpoints = hitpoints
 
@@ -76,12 +88,18 @@ class PhysicalStats:
 class Skills:
     def __init__(self):
         self.skills = read_json('config/skills.json')
-        if self.skills == -1:
-            print("read error")
-            self.skills = None
 
     def get_skills(self):
         return self.skills
+
+    def get_skill_val(self, skill):
+        return self.skills[skill]["value"]
+    
+    def get_skill_prof(self, skill):
+        return self.skills[skill]["prof"]
+
+    def get_keys(self):
+        return self.skills.keys()
 
     def update_values(self, ability_modifiers, prof_bonus):
         for skill in self.skills:
@@ -112,12 +130,12 @@ class MiscStats:
         self.dmg_resists = dmg_resists
 
 class Statblock:
-    def __init__(self, level, prime_stats, phys_stats, prof_bonus, misc_stats): #, sav_throws, dmg_resists, dmg_immunes, cond_immunes, senses, languages, CR, spells):
-        self.level = level
-        self.prime_stats = prime_stats
-        self.phys_stats = phys_stats
-        self.misc_stats = misc_stats
-        self.prof_bonus = prof_bonus
+    def __init__(self):
+        self.level = None
+        self.prime_stats = None
+        self.phys_stats = None
+        self.misc_stats = None
+        self.prof_bonus = None
 
     def get_level(self):
         return self.level
