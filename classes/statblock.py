@@ -89,6 +89,9 @@ class Skills:
     def __init__(self):
         self.skills = read_json('config/skills.json')
 
+    def __set_skill_val(self, skill, val):
+        self.skills[skill]["value"] = val
+
     def get_skills(self):
         return self.skills
 
@@ -96,44 +99,83 @@ class Skills:
         return self.skills[skill]["value"]
     
     def get_skill_prof(self, skill):
-        return self.skills[skill]["prof"]
+        return self.skills[skill]["is_prof"]
 
     def get_keys(self):
         return self.skills.keys()
 
+    def get_mod(self, skill):
+        return self.skills[skill]["mod"]
+
     def update_values(self, ability_modifiers, prof_bonus):
-        for skill in self.skills:
+        for skill in self.get_keys():
             for key in ability_modifiers.keys():
-                if skill["mod"] == key:
-                    skill["value"] = ability_modifiers[key]
-                    if skill["prof"] != 0:
-                        skill["value"] += math.floor(skill["prof"] * prof_bonus)
+                if self.get_mod(skill) == key:
+                    total_bonus = ability_modifiers[key]
+                    if self.get_skill_prof(skill) != 0:
+                        total_bonus += math.floor(self.get_skill_prof(skill) * prof_bonus)
+                    self.__set_skill_val(skill, total_bonus)
 
-class MiscStats:
+class Resistances:
     def __init__(self):
-        self.skills = None
-        self.sav_throws = None
-        self.dmg_resists = None
-        self.dmg_immunes = None
-        self.cond_immunes = None
-        self.senses = None
-        self.languages = None
-        self.CR = None
+        self.dmg_resists = []
+        self.dmg_immune = []
+        self.cond_immune = []
 
-    def set_skills(self, skills):
-        self.skills = skills
+    def add_dmg_resist(self, resist):
+        self.dmg_resists.append(resist)
 
-    def set_sav_throws(self, sav_throws):
-        self.sav_throws = sav_throws
+    def add_dmg_immune(self, immune):
+        self.dmg_immune.append(immune)
 
-    def set_dmg_resists(self, dmg_resists):
-        self.dmg_resists = dmg_resists
+    def add_cond_immune(self, cond):
+        self.cond_immune.append(cond)
+
+    def get_dmg_resists(self):
+        return self.dmg_resists
+
+    def get_dmg_immune(self):
+        return self.dmg_immune
+
+    def get_cond_immune(self):
+        return self.cond_immune
+
+    def remove_dmg_resist(self, resist):
+        if resist in self.dmg_resists:
+            self.dmg_resists.remove(resist)
+
+class Senses:
+    def __init__(self):
+        self.senses = []
+        self.languages = []
+        self.CR = 0
+
+    def add_sense(self, sense):
+        self.senses.append(sense)
+
+    def add_language(self, lang):
+        self.languages.append(lang)
+
+    def set_CR(self, CR):
+        self.CR = CR
+
+    def get_senses(self):
+        return self.senses
+
+    def get_languages(self):
+        return self.languages
+
+    def get_CR(self):
+        return self.CR
+
+
 
 class Statblock:
     def __init__(self):
         self.level = None
         self.prime_stats = None
         self.phys_stats = None
+        self.skills = None
         self.misc_stats = None
         self.prof_bonus = None
 
@@ -146,8 +188,14 @@ class Statblock:
     def get_physical_stats(self):
         return self.phys_stats
 
+    def get_skills(self):
+        return self.skills
+
     def get_proficiency(self):
         return self.prof_bonus
 
     def get_misc_stats(self):
         return self.misc_stats
+
+    def set_skills(self, skills):
+        self.skills = skills
