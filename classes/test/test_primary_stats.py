@@ -6,53 +6,27 @@ def setup():
     retval = []
     test_stats = PrimaryStats()
     blank_refr = {
-        "str": {"value": 0, "proficiency": False}, 
-        "dex": {"value": 0, "proficiency": False}, 
-        "con": {"value": 0, "proficiency": False}, 
-        "int": {"value": 0, "proficiency": False}, 
-        "wis": {"value": 0, "proficiency": False}, 
-        "cha": {"value": 0, "proficiency": False}}
-    blank_mod_refr = {
-        "str": int((0 - 10) / 2),
-        "dex": int((0 - 10) / 2),
-        "con": int((0 - 10) / 2),
-        "int": int((0 - 10) / 2),
-        "wis": int((0 - 10) / 2),
-        "cha": int((0 - 10) / 2)}
-    random_refr = {
-        "str": {"value": 20, "proficiency": True}, 
-        "dex": {"value": 18, "proficiency": False}, 
-        "con": {"value": 17, "proficiency": True}, 
-        "int": {"value": 8, "proficiency": False}, 
-        "wis": {"value": 9, "proficiency": False}, 
-        "cha": {"value": 12, "proficiency": False}}
+            "str": {"value": 0, "proficiency": False, "mod": -5, "sav_throw": -5}, 
+            "dex": {"value": 0, "proficiency": False, "mod": -5, "sav_throw": -5}, 
+            "con": {"value": 0, "proficiency": False, "mod": -5, "sav_throw": -5}, 
+            "int": {"value": 0, "proficiency": False, "mod": -5, "sav_throw": -5}, 
+            "wis": {"value": 0, "proficiency": False, "mod": -5, "sav_throw": -5}, 
+            "cha": {"value": 0, "proficiency": False, "mod": -5, "sav_throw": -5}}
     retval.append(test_stats)
     retval.append(blank_refr)
-    retval.append(blank_mod_refr)
-    retval.append(random_refr)
     return retval
 
 
-def test_get_ability_scores(setup):
+def test_get_abilities(setup):
     test_data = setup
-    test_score = test_data[0].get_ability_scores()
+    test_score = test_data[0].get_abilities()
 
     assert test_score == test_data[1]
 
 
 def test_get_keys(setup):
     test_data = setup
-    #test keys with ability score keys
-    assert test_data[0].get_keys() == test_data[2].keys()
-
-    #test keys with ability mod keys
     assert test_data[0].get_keys() == test_data[1].keys()
-
-
-def test_get_ability_modifiers(setup):
-    test_data = setup
-
-    assert test_data[0].get_ability_modifiers() == test_data[2]
 
 
 def test_get_ability_score_value(setup):
@@ -89,7 +63,6 @@ def test_set_ability_score_value(setup):
 def test_update_modifiers(setup):
     test_data = setup
     test_data[0].set_ability_score_value("str", 20)
-    test_data[0].update_modifiers()
     refr = [5, -5, -5, -5, -5, -5]
     i = 0
 

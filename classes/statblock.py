@@ -4,50 +4,50 @@ from classes.misc import read_json
 
 class PrimaryStats:
     def __init__(self):
-        self.ability_scores = {
-            "str": {"value": 0, "proficiency": False}, 
-            "dex": {"value": 0, "proficiency": False}, 
-            "con": {"value": 0, "proficiency": False}, 
-            "int": {"value": 0, "proficiency": False}, 
-            "wis": {"value": 0, "proficiency": False}, 
-            "cha": {"value": 0, "proficiency": False}}
-
-        self.ability_modifiers = {
-            "str": math.floor((self.ability_scores["str"]["value"] - 10) / 2),
-            "dex": math.floor((self.ability_scores["dex"]["value"] - 10) / 2),
-            "con": math.floor((self.ability_scores["con"]["value"] - 10) / 2),
-            "int": math.floor((self.ability_scores["int"]["value"] - 10) / 2),
-            "wis": math.floor((self.ability_scores["wis"]["value"] - 10) / 2),
-            "cha": math.floor((self.ability_scores["cha"]["value"] - 10) / 2)}
+        self._abilities = {
+            "str": {"value": 0, "proficiency": False, 
+            "mod": -5, "sav_throw": -5}, 
+            "dex": {"value": 0, "proficiency": False, 
+            "mod": -5, "sav_throw": -5}, 
+            "con": {"value": 0, "proficiency": False, 
+            "mod": -5, "sav_throw": -5}, 
+            "int": {"value": 0, "proficiency": False, 
+            "mod": -5, "sav_throw": -5}, 
+            "wis": {"value": 0, "proficiency": False, 
+            "mod": -5, "sav_throw": -5}, 
+            "cha": {"value": 0, "proficiency": False, 
+            "mod": -5, "sav_throw": -5}}
 
     def __set_ability_mod_value(self, ability, val):
-        self.ability_modifiers[ability] = val
+        self._abilities[ability]["mod"] = val
 
-    def get_ability_scores(self):
-        return self.ability_scores
+    def get_abilities(self):
+        return self._abilities
 
     def get_keys(self):
-        return self.ability_scores.keys()
-
-    def get_ability_modifiers(self):
-        return self.ability_modifiers
+        return self._abilities.keys()
     
     def get_ability_score_value(self, ability):
-        return self.ability_scores[ability]["value"]
+        return self._abilities[ability]["value"]
 
     def get_ability_mod_value(self, ability):
-        return self.ability_modifiers[ability]
+        return self._abilities[ability]["mod"]
 
     def get_ability_proficiency(self, ability):
-        return self.ability_scores[ability]["proficiency"]
+        return self._abilities[ability]["proficiency"]
+
+    def get_ability_save(self, ability):
+        return self._abilities[ability]["sav_throw"]
 
     def set_ability_score_value(self, ability, val):
-        self.ability_scores[ability]["value"] = val
+        self._abilities[ability]["value"] = val
+        self.__update_modifiers()
 
     def set_ability_proficiency(self, ability, val):
-        self.ability_scores[ability]["proficiency"] = val
+        self._abilities[ability]["proficiency"] = val
+        self.__update_modifiers()
 
-    def update_modifiers(self):
+    def __update_modifiers(self):
         for key in self.get_keys():
             val = math.floor((int(self.get_ability_score_value(key)) - 10) / 2)
             self.__set_ability_mod_value(key, val) 
@@ -56,117 +56,164 @@ class PrimaryStats:
 
 class PhysicalStats:
     def __init__(self):
-        self.hitpoints = 0
-        self.temp_hp = 0
-        self.armor_class = 10
-        self.speed = 0
+        self._max_hp = 0
+        self._curr_hp = 0
+        self._temp_hp = 0
+        self._armor_class = 0
+        self._bonus_ac = 0
+        self._base_speeds = {"W": 0, "F": 0, "S": 0, "C": 0}
+        self._bonus_speeds = {"W": 0, "F": 0, "S": 0, "C": 0}
     
-    def get_hitpoints(self):
-        return self.hitpoints
+    def add_curr_hp(self, amt):
+        self._curr_hp += amt
+
+    def add_temp_hp(self, amt):
+        self._temp_hp += amt
+
+    def add_bonus_ac(self, amt):
+        self._bonus_ac += amt
+
+    def get_max_hp(self):
+        return self._max_hp
+
+    def get_curr_hp(self):
+        return self._curr_hp
 
     def get_temp_hp(self):
-        return self.temp_hp
+        return self._temp_hp
 
     def get_armor_class(self):
-        return self.armor_class
+        return self._armor_class
 
-    def get_speed(self):
-        return self.speed
+    def get_bonus_ac(self):
+        return self._bonus_ac
 
-    def set_hitpoints(self, hitpoints):
-        self.hitpoints = hitpoints
+    def get_base_speeds(self):
+        return self._base_speeds
 
-    def set_temp_hp(self, temp_hp):
-        self.temp_hp = temp_hp
+    def get_bonus_speeds(self):
+        return self._bonus_speeds
 
-    def set_armor_class(self, armor_class):
-        self.armor_class = armor_class
 
-    def set_speed(self, speed):
-        self.speed = speed
+    def reset_temp_hp(self):
+        self._temp_hp = 0
+
+    def set_max_hp(self, amt):
+        self._max_hp = amt
+
+    def set_armor_class(self, amt):
+        self._armor_class = amt
+
+    def set_walk_speed(self, amt):
+        self._base_speeds["W"] = amt
+
+    def set_fly_speed(self, amt):
+        self._base_speeds["F"] = amt
+
+    def set_swim_speed(self, amt):
+        self._base_speeds["S"] = amt
+
+    def set_climb_speed(self, amt):
+        self._base_speeds["C"] = amt
 
 class Skills:
     def __init__(self):
-        self.skills = read_json('config/skills.json')
+        self._skills = read_json('config/skills.json')
 
     def __set_skill_val(self, skill, val):
-        self.skills[skill]["value"] = val
+        self._skills[skill]["value"] = val
 
     def get_skills(self):
-        return self.skills
+        return self._skills
 
     def get_skill_val(self, skill):
-        return self.skills[skill]["value"]
+        return self._skills[skill]["value"]
     
     def get_skill_prof(self, skill):
-        return self.skills[skill]["is_prof"]
+        return self._skills[skill]["is_prof"]
 
     def get_keys(self):
-        return self.skills.keys()
+        return self._skills.keys()
 
     def get_mod(self, skill):
-        return self.skills[skill]["mod"]
+        return self._skills[skill]["mod"]
 
-    def update_values(self, ability_modifiers, prof_bonus):
+    def update_values(self, abilities, prof_bonus):
         for skill in self.get_keys():
-            for key in ability_modifiers.keys():
+            for key in abilities.keys():
                 if self.get_mod(skill) == key:
-                    total_bonus = ability_modifiers[key]
+                    total_bonus = abilities[key]["mod"]
                     if self.get_skill_prof(skill) != 0:
                         total_bonus += math.floor(self.get_skill_prof(skill) * prof_bonus)
                     self.__set_skill_val(skill, total_bonus)
 
 class Resistances:
     def __init__(self):
-        self.dmg_resists = []
-        self.dmg_immune = []
-        self.cond_immune = []
+        self._dmg_resists = set()
+        self._dmg_immunes = set()
+        self._cond_immunes = set()
 
-    def add_dmg_resist(self, resist):
-        self.dmg_resists.append(resist)
+    def add_dmg_resist(self, dmg):
+        self._dmg_resists.add(dmg)
 
-    def add_dmg_immune(self, immune):
-        self.dmg_immune.append(immune)
+    def add_dmg_immune(self, dmg):
+        self._dmg_immunes.add(dmg)
 
     def add_cond_immune(self, cond):
-        self.cond_immune.append(cond)
+        self._cond_immunes.add(cond)
 
     def get_dmg_resists(self):
-        return self.dmg_resists
+        return self._dmg_resists
 
-    def get_dmg_immune(self):
-        return self.dmg_immune
+    def get_dmg_immunes(self):
+        return self._dmg_immunes
 
-    def get_cond_immune(self):
-        return self.cond_immune
+    def get_cond_immunes(self):
+        return self._cond_immunes
 
-    def remove_dmg_resist(self, resist):
-        if resist in self.dmg_resists:
-            self.dmg_resists.remove(resist)
+    def remove_dmg_resist(self, dmg):
+        try:
+            self._dmg_resists.remove(dmg)
+        except:
+            raise IndexError
+
+    def remove_dmg_immune(self, dmg):
+        try:
+            self._dmg_immunes.remove(dmg)
+        except:
+            raise IndexError
+
+    def remove_cond_immune(self, cond):
+        try:
+            self._cond_immunes.remove(cond)
+        except:
+            raise IndexError
 
 class Senses:
     def __init__(self):
-        self.senses = []
-        self.languages = []
-        self.CR = 0
+        self._senses = []
+        self._languages = []
+        self._CR = 0
+        self._passive_perc = 0
+        self._passive_inv = 0
 
     def add_sense(self, sense):
-        self.senses.append(sense)
+        self._senses.append(sense)
 
     def add_language(self, lang):
-        self.languages.append(lang)
+        self._languages.append(lang)
 
-    def set_CR(self, CR):
-        self.CR = CR
+    def set_CR(self, _CR):
+        self._CR = _CR
 
     def get_senses(self):
-        return self.senses
+        return self._senses
 
     def get_languages(self):
-        return self.languages
+        return self._languages
 
     def get_CR(self):
-        return self.CR
+        return self._CR
 
 
 
@@ -175,7 +222,7 @@ class Statblock:
         self.level = None
         self.prime_stats = None
         self.phys_stats = None
-        self.skills = None
+        self._skills = None
         self.misc_stats = None
         self.prof_bonus = None
 
@@ -189,7 +236,7 @@ class Statblock:
         return self.phys_stats
 
     def get_skills(self):
-        return self.skills
+        return self._skills
 
     def get_proficiency(self):
         return self.prof_bonus
@@ -198,4 +245,4 @@ class Statblock:
         return self.misc_stats
 
     def set_skills(self, skills):
-        self.skills = skills
+        self._skills = skills

@@ -10,9 +10,7 @@ def setup():
     retval.append(skills)
     retval.append(stats)
     return retval
-
-def test_init(setup):
-    assert setup[0].get_skills() != json.JSONDecodeError
+    
 
 def test_get_skills(setup):
     skills = setup[0].get_skills()
@@ -37,7 +35,7 @@ def test_get_skills(setup):
     assert skills == refr
 
 #Also checks proficiency
-def test_get_skill_val(setup):
+def test_get_skill_val_and_prof(setup):
     skills = setup[0]
 
     for key in skills.get_keys():
@@ -48,7 +46,7 @@ def test_update_values(setup):
     skills = setup[0]
     stats = setup[1]
 
-    skills.update_values(stats.get_ability_modifiers(), 2)
+    skills.update_values(stats.get_abilities(), 0)
 
     for skill in skills.get_keys():
         assert skills.get_skill_val(skill) == -5
