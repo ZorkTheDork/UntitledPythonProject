@@ -12,3 +12,5 @@ classes/test/__pycache__/test_skills.cpython-37-pytest-5.3.5.pyc
 .vscode/launch.json
 classes/test/__pycache__/test_resistances.cpython-37-pytest-5.3.5.pyc
 config/.~lock.playable_races.xlsx#
+enums/__pycache__/statblockenums.cpython-37.pyc
+classes/__pycache__/enums.cpython-37.pyc

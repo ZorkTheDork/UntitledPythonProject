@@ -1,6 +1,8 @@
 import math 
 import json
+from classes.enums import RaceSizes, MoveSpeeds
 from classes.misc import read_json
+
 
 class PrimaryStats:
     def __init__(self):
@@ -52,20 +54,23 @@ class PrimaryStats:
             val = math.floor((int(self.get_ability_score_value(key)) - 10) / 2)
             self.__set_ability_mod_value(key, val) 
 
-                   
-
 class PhysicalStats:
     def __init__(self):
         self._max_hp = 0
         self._curr_hp = 0
         self._temp_hp = 0
+        self._size = RaceSizes.TINY
         self._armor_class = 0
         self._bonus_ac = 0
-        self._base_speeds = {"W": 0, "F": 0, "S": 0, "C": 0}
-        self._bonus_speeds = {"W": 0, "F": 0, "S": 0, "C": 0}
+        self._base_speeds = {MoveSpeeds.WALK: 0, MoveSpeeds.FLY: 0, 
+                            MoveSpeeds.SWIM: 0, MoveSpeeds.CLIMB: 0}
+        self._bonus_speeds = {MoveSpeeds.WALK: 0, MoveSpeeds.FLY: 0, 
+                            MoveSpeeds.SWIM: 0, MoveSpeeds.CLIMB: 0}
     
     def add_curr_hp(self, amt):
         self._curr_hp += amt
+        if self._curr_hp > self._max_hp:
+            self._curr_hp = self.get_max_hp()        
 
     def add_temp_hp(self, amt):
         self._temp_hp += amt
@@ -93,7 +98,6 @@ class PhysicalStats:
 
     def get_bonus_speeds(self):
         return self._bonus_speeds
-
 
     def reset_temp_hp(self):
         self._temp_hp = 0
